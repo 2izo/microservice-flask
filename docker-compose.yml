@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  backend:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - db
+    networks:
+      - my-network
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    command: 'python main.py'
+
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'main'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - .dbdata:/var/lib/mysql
+    networks:
+      - my-network
+    ports:
+      - 3306:3306
+
+networks:
+  my-network:
